@@ -1900,12 +1900,21 @@ class EditorPropertyResourceAssignButton : public Button {
 	GDCLASS(EditorPropertyResourceAssignButton, Button)
 public:
 	bool doubleclicked;
+	bool rightclicked;
 
 	virtual void _gui_input(Ref<InputEvent> p_event) {
 		Ref<InputEventMouseButton> b = p_event;
 
-		if (b.is_valid() && b->is_pressed() && b->get_button_index() == BUTTON_LEFT) {
-			doubleclicked = b->is_doubleclick();
+		if (b.is_valid()) {
+			if (b->is_pressed()) {
+				doubleclicked = b->get_button_index() == BUTTON_LEFT && b->is_doubleclick();
+			}
+
+			rightclicked = b->get_button_index() == BUTTON_RIGHT;
+
+			if (rightclicked) {
+				b->set_button_index(BUTTON_LEFT);
+			}
 		}
 
 		Button::_gui_input(p_event);
@@ -1913,6 +1922,7 @@ public:
 
 	EditorPropertyResourceAssignButton() {
 		doubleclicked = false;
+		rightclicked = false;
 	}
 };
 
@@ -2398,6 +2408,11 @@ void EditorPropertyResource::_resource_selected() {
 	}
 
 	if (use_sub_inspector) {
+
+		if (assign->rightclicked) {
+			_update_menu();
+			return;
+		}
 
 		if (assign->doubleclicked) {
 			get_edited_object()->editor_set_section_unfold(get_edited_property(), false);
