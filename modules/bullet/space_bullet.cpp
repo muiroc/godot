@@ -689,16 +689,21 @@ void SpaceBullet::check_ghost_overlaps() {
 
 			// For each area shape
 			for (y = area->get_shape_count() - 1; 0 <= y; --y) {
-				if (!area->get_bt_shape(y)->isConvex())
+				area_shape = static_cast<btConvexShape *>(area->get_bt_shape(y));
+
+				if (!area_shape || !area_shape->isConvex())
 					continue;
 
 				gjk_input.m_transformA = area->get_transform__bullet() * area->get_bt_shape_transform(y);
-				area_shape = static_cast<btConvexShape *>(area->get_bt_shape(y));
 
 				// For each other object shape
 				for (z = otherObject->get_shape_count() - 1; 0 <= z; --z) {
 
 					other_body_shape = static_cast<btCollisionShape *>(otherObject->get_bt_shape(z));
+
+					if (!other_body_shape)
+						continue;
+
 					gjk_input.m_transformB = otherObject->get_transform__bullet() * otherObject->get_bt_shape_transform(z);
 
 					if (other_body_shape->isConvex()) {
