@@ -886,7 +886,7 @@ Error OS_JavaScript::initialize(const VideoMode &p_desired, int p_video_driver, 
 
 	EmscriptenWebGLContextAttributes attributes;
 	emscripten_webgl_init_context_attributes(&attributes);
-	attributes.alpha = false;
+	attributes.alpha = true;
 	attributes.antialias = false;
 	ERR_FAIL_INDEX_V(p_video_driver, VIDEO_DRIVER_MAX, ERR_INVALID_PARAMETER);
 
@@ -980,7 +980,7 @@ Error OS_JavaScript::initialize(const VideoMode &p_desired, int p_video_driver, 
 	EMSCRIPTEN_RESULT result;
 #define EM_CHECK(ev)                         \
 	if (result != EMSCRIPTEN_RESULT_SUCCESS) \
-	ERR_PRINT("Error while setting " #ev " callback: Code " + itos(result))
+	ERR_PRINT("Error while setting " #ev " callback: Code " + itos(result));
 #define SET_EM_CALLBACK(target, ev, cb)                               \
 	result = emscripten_set_##ev##_callback(target, NULL, true, &cb); \
 	EM_CHECK(ev)
